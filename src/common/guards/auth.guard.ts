@@ -7,14 +7,13 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { constants } from '../utils/constants';
 import { Request } from 'express';
-import { RequestWithUserRole } from '../interfaces/request-with-user-role.interface';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<RequestWithUserRole>();
+    const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();

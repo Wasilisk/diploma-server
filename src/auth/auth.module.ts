@@ -5,19 +5,19 @@ import { AuthService } from './auth.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { constants } from '../common/utils/constants';
 import { HttpModule } from '@nestjs/axios';
-import { RateLimiterModule } from 'src/rate-limiter/rate-limiter.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService],
   imports: [
+    MailModule,
     HttpModule,
     PrismaModule,
-    RateLimiterModule,
     JwtModule.register({
       global: true,
       secret: constants.jwtSecret,
-      signOptions: { expiresIn: '2 days' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
 })

@@ -1,17 +1,9 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-  Req,
-  UseInterceptors,
-} from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
-import { TokenDto } from 'src/common/dto/token.dto';
-import { RateLimiterInterceptor } from 'src/common/interceptors/rate-limiter.interpector';
+import { UserEmailDto } from './dto/user-email.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,22 +14,31 @@ export class AuthController {
     return this.authService.signUp(createUserDto);
   }
 
-  @HttpCode(200)
   @Post('login')
-  @UseInterceptors(RateLimiterInterceptor)
-  login(@Body() _data: LoginDto, @Req() request: Request) {
-    return this.authService.login(request);
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 
-  @HttpCode(200)
-  @Post('login/verify/token')
-  verifyLogin(@Body() _body: TokenDto, @Req() request: Request) {
-    return this.authService.verifyLogin(request);
+  @Post('captcha/verify-token/:token')
+  verifyCaptcha(@Param('token') token: string) {
+    return this.authService.verifyCaptcha(token);
   }
 
-  @HttpCode(200)
-  @Post('captcha/verify-token')
-  verifyCaptcha(@Body() _body: TokenDto, @Req() request: Request) {
-    return this.authService.verifyCaptcha(request);
+  @Post('reset-password')
+  async getResetPasswordEmail(@Body() userEmailDto: UserEmailDto) {
+    return this.authService.getResetPasswordEmail(userEmailDto);
+  }
+
+  @Get('reset-password/:token')
+  async checkResetPasswordToken(@Param('token') token: string) {
+    return this.authService.checkConfirmationToken(token);
+  }
+
+  @Post('reset-password/:token')
+  resetPassword(
+    @Param('token') token: string,
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<void> {
+    return this.authService.resetPassword(token, resetPasswordDto);
   }
 }

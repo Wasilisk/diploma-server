@@ -8,39 +8,37 @@ datasource db {
 }
 
 model User {
-  id              String   @id @default(uuid())
-  email           String   @unique
-  phone           String   @unique
-  password        String
-  firstName       String
-  lastName        String
-  twoFA           Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  Otp             Otp[]
-  isPhoneVerified Boolean  @default(false)
+  email             String           @unique
+  phone             String           @unique
+  password          String
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  id                Int              @id @default(autoincrement())
+  confirmationToken String?          @unique
+  profile           Profile?
+  supportMessages   SupportMessage[]
 }
 
-model Otp {
-  id        String   @id @default(uuid())
-  owner     User     @relation(fields: [userId], references: [id])
-  userId    String
-  code      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  expiresAt DateTime @db.Timestamp(5)
-  useCase   UseCase
+model Profile {
+  id             Int     @id @default(autoincrement())
+  userId         Int     @unique
+  firstName      String
+  lastName       String
+  profilePicture String?
+  user           User    @relation(fields: [userId], references: [id])
 }
 
-model RateLimit {
-  id        String   @id @default(uuid())
-  userIp    String
-  endpoint  String
-  timestamp DateTime @default(now())
+model SupportMessage {
+  id        Int                  @id @default(autoincrement())
+  userId    Int
+  subject   String
+  content   String
+  user      User                 @relation(fields: [userId], references: [id])
+  status    SupportMessageStatus @default(ACTIVE)
+  createdAt DateTime             @default(now())
 }
 
-enum UseCase {
-  LOGIN
-  D2FA
-  PHV
+enum SupportMessageStatus {
+  ACTIVE
+  RESOLVED
 }
