@@ -42,3 +42,17 @@ enum SupportMessageStatus {
   ACTIVE
   RESOLVED
 }
+
+model Direction {
+  id    Int    @id @default(autoincrement())
+  name  String
+  image String
+  tours Tour[]
+}
+
+model Tour {
+  id          Int       @id @default(autoincrement())
+  name        String
+  directionId Int
+  direction   Direction @relation(fields: [directionId], references: [id])
+}

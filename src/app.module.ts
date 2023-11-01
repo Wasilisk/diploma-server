@@ -11,6 +11,8 @@ import {
 import { LoggerMiddleware } from './common/middlewares/loger.middleware';
 import { ConfigModule } from '@nestjs/config';
 import { SupportMessageModule } from './support-message/support-message.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { resolve } from 'path';
 
 @Module({
   imports: [
@@ -19,8 +21,10 @@ import { SupportMessageModule } from './support-message/support-message.module';
     AccountModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SupportMessageModule,
+    ServeStaticModule.forRoot({
+      rootPath: resolve(__dirname, '..', 'static'),
+    }),
   ],
-  controllers: [],
   providers: [
     {
       provide: APP_PIPE,
