@@ -30,9 +30,18 @@ export const parseFilter = (filter: Filtering) => {
       ],
     };
   if (filter.rule == FilterRule.LIKE)
-    return { [filter.property]: { contains: `%${filter.value}%` } };
+    return {
+      [filter.property]: { contains: `%${filter.value}%`, mode: 'insensitive' },
+    };
   if (filter.rule == FilterRule.NOT_LIKE)
-    return { NOT: { [filter.property]: { contains: `%${filter.value}%` } } };
+    return {
+      NOT: {
+        [filter.property]: {
+          contains: `%${filter.value}%`,
+          mode: 'insensitive',
+        },
+      },
+    };
   if (filter.rule == FilterRule.IN)
     return { [filter.property]: { in: filter.value.split(',') } };
   if (filter.rule == FilterRule.NOT_IN)
