@@ -13,16 +13,19 @@ import { ConfigModule } from '@nestjs/config';
 import { SupportMessageModule } from './support-message/support-message.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { resolve } from 'path';
+import { DirectionModule } from './direction/direction.module';
 
 @Module({
   imports: [
     PrismaModule,
     AuthModule,
     AccountModule,
-    ConfigModule.forRoot({ isGlobal: true }),
     SupportMessageModule,
+    DirectionModule,
+    ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
-      rootPath: resolve(__dirname, '..', 'static'),
+      rootPath: resolve(__dirname, 'static'),
+      serveStaticOptions: { index: false },
     }),
   ],
   providers: [

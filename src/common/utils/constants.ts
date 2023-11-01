@@ -6,4 +6,5 @@ export const constants = {
   twilioPhoneNumber: process.env.TWILIO_PHONE_NUMBER,
   sessionSecret: process.env.SESSION_SECRET,
   recaptchaSecret: process.env.RECAPTCHA_SECRET,
+  filesUploadLocation: process.env.UPLOAD_LOCATION,
 };
