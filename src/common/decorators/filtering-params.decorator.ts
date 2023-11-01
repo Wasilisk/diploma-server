@@ -32,7 +32,7 @@ export const FilteringParams = createParamDecorator(
 
     if (
       !filter.match(
-        /^[a-zA-Z0-9_]+:(eq|neq|gt|gte|lt|lte|like|nlike|in|nin):[a-zA-Z0-9_,]+$/,
+        /^[a-zA-Z0-9_]+:(eq|neq|gt|gte|lt|lte|like|nlike|in|nin):[a-zA-Z0-9а-яA-Я_,]+$/,
       ) &&
       !filter.match(/^[a-zA-Z0-9_]+:(isnull|isnotnull)$/)
     ) {
