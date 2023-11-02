@@ -1,7 +1,7 @@
-import { Controller, Get, UseGuards, HttpCode, Req } from '@nestjs/common';
+import { Controller, Get, UseGuards, HttpCode } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { AuthGuard } from '../common/guards/auth.guard';
-import { GetUserId } from '../common/decorators/get-user-id.decorator';
+import { GetUserId } from '../common/decorators';
 
 @Controller('account')
 export class AccountController {
