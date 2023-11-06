@@ -1,52 +1,55 @@
 import { FilterRule } from '../decorators';
 import { Filtering } from '../interfaces';
 
-export const parseFilter = (filter: Filtering) => {
-  if (!filter) return {};
+function applyFilters(parsedFilters: Filtering[]) {
+  let where = {};
 
-  if (filter.rule == FilterRule.IS_NULL) return { [filter.property]: null };
-  if (filter.rule == FilterRule.IS_NOT_NULL)
-    return { NOT: { [filter.property]: null } };
-  if (filter.rule == FilterRule.EQUALS)
-    return { [filter.property]: filter.value };
-  if (filter.rule == FilterRule.NOT_EQUALS)
-    return { NOT: { [filter.property]: filter.value } };
-  if (filter.rule == FilterRule.GREATER_THAN)
-    return { [filter.property]: { gt: filter.value } };
-  if (filter.rule == FilterRule.GREATER_THAN_OR_EQUALS)
-    return {
-      OR: [
-        { [filter.property]: { gt: filter.value } },
-        { [filter.property]: filter.value },
-      ],
-    };
-  if (filter.rule == FilterRule.LESS_THAN)
-    return { [filter.property]: { lt: filter.value } };
-  if (filter.rule == FilterRule.LESS_THAN_OR_EQUALS)
-    return {
-      OR: [
-        { [filter.property]: { lt: filter.value } },
-        { [filter.property]: filter.value },
-      ],
-    };
-  if (filter.rule == FilterRule.LIKE)
-    return {
-      [filter.property]: { contains: `%${filter.value}%`, mode: 'insensitive' },
-    };
-  if (filter.rule == FilterRule.NOT_LIKE)
-    return {
-      NOT: {
-        [filter.property]: {
-          contains: `%${filter.value}%`,
-          mode: 'insensitive',
+  for (const filter of parsedFilters) {
+    const { property, rule, value } = filter;
+    const parsedValue = isNaN(+value) ? value : parseInt(value);
+    if (rule === FilterRule.IS_NULL) {
+      where = { ...where, [property]: null };
+    } else if (rule === FilterRule.IS_NOT_NULL) {
+      where = { ...where, [property]: { NOT: null } };
+    } else if (rule === FilterRule.EQUALS) {
+      where = { ...where, [property]: parsedValue };
+    } else if (rule === FilterRule.NOT_EQUALS) {
+      where = { ...where, [property]: { NOT: parsedValue } };
+    } else if (rule === FilterRule.GREATER_THAN) {
+      where = { ...where, [property]: { gt: parsedValue } };
+    } else if (rule === FilterRule.GREATER_THAN_OR_EQUALS) {
+      where = {
+        ...where,
+        OR: [{ [property]: { gt: parsedValue } }, { [property]: parsedValue }],
+      };
+    } else if (rule === FilterRule.LESS_THAN) {
+      where = { ...where, [property]: { lt: parsedValue } };
+    } else if (rule === FilterRule.LESS_THAN_OR_EQUALS) {
+      where = {
+        ...where,
+        OR: [{ [property]: { lt: parsedValue } }, { [property]: parsedValue }],
+      };
+    } else if (rule === FilterRule.LIKE) {
+      where = {
+        ...where,
+        [property]: { contains: `%${parsedValue}%`, mode: 'insensitive' },
+      };
+    } else if (rule === FilterRule.NOT_LIKE) {
+      where = {
+        ...where,
+        [property]: {
+          NOT: { contains: `%${parsedValue}%`, mode: 'insensitive' },
         },
-      },
-    };
-  if (filter.rule == FilterRule.IN)
-    return { [filter.property]: { in: filter.value.split(',') } };
-  if (filter.rule == FilterRule.NOT_IN)
-    return { NOT: { [filter.property]: { in: filter.value.split(',') } } };
-};
+      };
+    } else if (rule === FilterRule.IN) {
+      where = { ...where, [property]: { in: value.split(',') } };
+    } else if (rule === FilterRule.NOT_IN) {
+      where = { ...where, [property]: { NOT: { in: value.split(',') } } };
+    }
+  }
 
-export const getWhere = (filter?: Filtering) =>
-  filter ? parseFilter(filter) : {};
+  return where;
+}
+
+export const getWhere = (parsedFilters?: Filtering[]) =>
+  parsedFilters ? applyFilters(parsedFilters) : {};

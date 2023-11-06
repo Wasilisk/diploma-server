@@ -38,17 +38,15 @@ export class SupportMessageController {
     return this.supportMessageService.create(userId, supportMessageDto);
   }
 
-  @UseGuards(AuthGuard)
   @Get()
   getAllSupportMessages(
     @PaginationParams() paginationParams: Pagination,
     @SortingParams(['createdAt']) sort?: Sorting,
-    @FilteringParams(['status']) filter?: Filtering,
+    @FilteringParams(['status']) filters?: Filtering[],
   ): Promise<PaginatedResource<Partial<SupportMessage>>> {
-    return this.supportMessageService.getAll(paginationParams, sort, filter);
+    return this.supportMessageService.getAll(paginationParams, sort, filters);
   }
 
-  @UseGuards(AuthGuard)
   @Delete('/:messageId')
   deleteSupportMessage(@Param('messageId', ParseIntPipe) messageId: number) {
     return this.supportMessageService.delete(messageId);

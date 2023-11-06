@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import _ from 'underscore';
 import { SupportMessageDto } from './dto/support-message.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, SupportMessageStatus } from '@prisma/client';
 import { Filtering, Pagination, Sorting } from '../common/interfaces';
 import { getWhere } from '../common/utils/get-where';
 import { getOrder } from '../common/utils/get-order';
@@ -24,10 +22,10 @@ export class SupportMessageService {
   async getAll(
     { page, limit, size, offset }: Pagination,
     sort?: Sorting,
-    filter?: Filtering,
+    filters?: Filtering[],
   ) {
     const query = {
-      where: getWhere(filter),
+      where: getWhere(filters),
       orderBy: getOrder(sort),
       take: limit,
       skip: offset,

@@ -14,6 +14,7 @@ import { SupportMessageModule } from './support-message/support-message.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { resolve } from 'path';
 import { DirectionModule } from './direction/direction.module';
+import { TourModule } from './tour/tour.module';
 
 @Module({
   imports: [
@@ -22,10 +23,12 @@ import { DirectionModule } from './direction/direction.module';
     AccountModule,
     SupportMessageModule,
     DirectionModule,
+    TourModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: resolve(__dirname, 'static'),
-      serveStaticOptions: { index: false },
+      serveRoot: '/',
+      serveStaticOptions: { index: false, redirect: false },
     }),
   ],
   providers: [
