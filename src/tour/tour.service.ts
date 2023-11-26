@@ -8,9 +8,12 @@ import { getWhere } from '../common/utils/get-where';
 export class TourService {
   constructor(private prisma: PrismaService) {}
 
-  async create(image: Express.Multer.File, createTourDto: CreateTourDto) {
-    const coverImage = getImageUrl(image.filename);
-    const { price, directionId, ...otherData } = createTourDto;
+  async create(
+    images: Array<Express.Multer.File>,
+    createTourDto: CreateTourDto,
+  ) {
+    const imagesIds = images.map((image) => getImageUrl(image.filename));
+    const { directionId, tourInfo, ...otherData } = createTourDto;
     const tour = await this.prisma.tour.create({
       data: {
         direction: {
@@ -18,9 +21,14 @@ export class TourService {
             id: Number(directionId),
           },
         },
-        price: Number(price),
-        coverImage,
+        gallery: imagesIds,
+        tourInfo: {
+          create: tourInfo,
+        },
         ...otherData,
+      },
+      include: {
+        tourInfo: true,
       },
     });
 
@@ -35,6 +43,10 @@ export class TourService {
       where: getWhere(filters),
       take: limit,
       skip: offset,
+      include: {
+        tourInfo: true,
+        ticketTypes: true,
+      },
     };
 
     const [tours, count] = await this.prisma.$transaction([
@@ -50,6 +62,17 @@ export class TourService {
     };
   }
 
+  async getById(tourId: number) {
+    const tour = await this.prisma.tour.findUnique({
+      where: { id: tourId },
+      include: {
+        tourInfo: true,
+        ticketTypes: true,
+      },
+    });
+
+    return tour;
+  }
   async delete(tourId: number) {
     await this.prisma.tour.delete({
       where: { id: tourId },

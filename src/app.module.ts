@@ -15,6 +15,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { resolve } from 'path';
 import { DirectionModule } from './direction/direction.module';
 import { TourModule } from './tour/tour.module';
+import { TicketTypesModule } from './ticket-types/ticket-types.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TourModule } from './tour/tour.module';
     SupportMessageModule,
     DirectionModule,
     TourModule,
+    TicketTypesModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: resolve(__dirname, 'static'),
