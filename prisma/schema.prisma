@@ -54,8 +54,33 @@ model Tour {
   id          Int       @id @default(autoincrement())
   name        String
   description String
-  price       Int
-  coverImage  String
   directionId Int
   direction   Direction @relation(fields: [directionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  gallery     String[]
+  content     String
+
+  tourInfo    TourInfo?
+  ticketTypes TicketType[]
+}
+
+model TourInfo {
+  id           Int     @id @default(autoincrement())
+  meetingPlace String
+  endingPlace  String
+  duration     String
+  groupSize    String?
+  groupType    String
+  paymentInfo  String?
+
+  tourId Int  @unique
+  tour   Tour @relation(fields: [tourId], references: [id])
+}
+
+model TicketType {
+  id    Int    @id @default(autoincrement())
+  name  String
+  price Int
+
+  tourId Int
+  tour   Tour @relation(fields: [tourId], references: [id])
 }
