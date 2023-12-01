@@ -4,6 +4,7 @@ import { Filtering, Pagination } from '../common/interfaces';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { getImageUrl } from '../common/utils/get-image-url';
 import { getWhere } from '../common/utils/get-where';
+
 @Injectable()
 export class TourService {
   constructor(private prisma: PrismaService) {}

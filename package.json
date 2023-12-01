@@ -37,6 +37,7 @@
     "nestjs-zod": "^3.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "stripe": "^14.5.0",
     "twilio": "^4.18.0",
     "underscore": "^1.13.6",
     "uuid": "^9.0.1"

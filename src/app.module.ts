@@ -16,6 +16,7 @@ import { resolve } from 'path';
 import { DirectionModule } from './direction/direction.module';
 import { TourModule } from './tour/tour.module';
 import { TicketTypesModule } from './ticket-types/ticket-types.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TicketTypesModule } from './ticket-types/ticket-types.module';
     DirectionModule,
     TourModule,
     TicketTypesModule,
+    PaymentModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: resolve(__dirname, 'static'),
