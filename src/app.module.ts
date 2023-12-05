@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { PrismaModule } from './prisma/prisma.module';
@@ -17,6 +22,10 @@ import { DirectionModule } from './direction/direction.module';
 import { TourModule } from './tour/tour.module';
 import { TicketTypesModule } from './ticket-types/ticket-types.module';
 import { PaymentModule } from './payment/payment.module';
+import { RawBodyMiddleware } from './common/middlewares/raw-body.middleware';
+import { JsonBodyMiddleware } from './common/middlewares/json-body.middleware';
+import { OrderModule } from './order/order.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -28,12 +37,14 @@ import { PaymentModule } from './payment/payment.module';
     TourModule,
     TicketTypesModule,
     PaymentModule,
+    OrderModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: resolve(__dirname, 'static'),
       serveRoot: '/',
       serveStaticOptions: { index: false, redirect: false },
     }),
+    ScheduleModule.forRoot(),
   ],
   providers: [
     {
@@ -52,6 +63,10 @@ import { PaymentModule } from './payment/payment.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer
+      .apply(RawBodyMiddleware)
+      .forRoutes({ path: '/webhook', method: RequestMethod.POST })
+      .apply(LoggerMiddleware, JsonBodyMiddleware)
+      .forRoutes('*');
   }
 }

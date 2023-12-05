@@ -11,4 +11,5 @@ export const constants = {
   filesUploadLocation: process.env.UPLOAD_LOCATION,
   stripeApiKey: process.env.STRIPE_API_KEY,
   clientUrl: process.env.CLIENT_URL,
+  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
 };

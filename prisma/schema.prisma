@@ -17,6 +17,7 @@ model User {
   confirmationToken String?          @unique
   profile           Profile?
   supportMessages   SupportMessage[]
+  orders            Order[]
 }
 
 model Profile {
@@ -61,6 +62,7 @@ model Tour {
 
   tourInfo    TourInfo?
   ticketTypes TicketType[]
+  orders      Order[]
 }
 
 model TourInfo {
@@ -83,4 +85,28 @@ model TicketType {
 
   tourId Int
   tour   Tour @relation(fields: [tourId], references: [id])
+
+  orders Order[]
+}
+
+model Order {
+  id     Int         @id @default(autoincrement())
+  count  Int
+  status OrderStatus @default(ACTIVE)
+  date   DateTime
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  tourId Int
+  tour   Tour @relation(fields: [tourId], references: [id])
+
+  ticketTypeId Int
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+}
+
+enum OrderStatus {
+  ACTIVE
+  CANCELED
+  COMPLETED
 }
