@@ -1,4 +1,5 @@
 import { z } from 'nestjs-zod/z';
+import { TicketTypeSchema } from './ticket-type.schema';
 
 export const tourSchema = z.object({
   directionId: z.string(),

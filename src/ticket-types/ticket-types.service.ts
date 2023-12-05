@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { getImageUrl } from '../common/utils/get-image-url';
 import { CreateTicketTypeDto } from './dto/create-ticket-type.dto';
 
 @Injectable()
@@ -21,6 +20,12 @@ export class TicketTypesService {
     });
 
     return ticketType;
+  }
+
+  async createMany(ticketTypesDto: CreateTicketTypeDto[]) {
+    return this.prisma.ticketType.createMany({
+      data: ticketTypesDto,
+    });
   }
 
   async getByTourId(tourId: number) {

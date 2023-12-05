@@ -94,6 +94,7 @@ model Order {
   count  Int
   status OrderStatus @default(ACTIVE)
   date   DateTime
+  price  Int
 
   userId Int
   user   User @relation(fields: [userId], references: [id])

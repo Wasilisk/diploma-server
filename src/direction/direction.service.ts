@@ -34,10 +34,6 @@ export class DirectionService {
       where: {
         id: directionId,
       },
-      include: {
-        tours: true,
-        _count: true,
-      },
     });
 
     return direction;
