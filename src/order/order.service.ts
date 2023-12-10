@@ -4,18 +4,16 @@ import { Order, OrderStatus } from '@prisma/client';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Filtering, Pagination } from '../common/interfaces';
 import { getWhere } from '../common/utils/get-where';
-import { getOrder } from '../common/utils/get-order';
 
 @Injectable()
 export class OrderService {
   constructor(private prisma: PrismaService) {}
-  async createOrders(orders: CreateOrderDto[], userId: number) {
-    await this.prisma.order.createMany({
-      data: orders.map((order) => ({
-        userId,
-        ...order,
-      })),
-    });
+  async reserveOrders(orders: CreateOrderDto[], userId: number) {
+    return this.prisma.$transaction(
+      orders.map((order) =>
+        this.prisma.order.create({ data: { ...order, userId } }),
+      ),
+    );
   }
 
   async getByUserId(
@@ -24,13 +22,18 @@ export class OrderService {
     filters?: Filtering[],
   ) {
     const query = {
-      where: { ...getWhere(filters), userId },
+      where: {
+        userId,
+        status: { not: OrderStatus.RESERVED },
+        ...getWhere(filters),
+      },
       include: {
         tour: {
           include: {
             direction: true,
           },
         },
+        tourGroup: true,
         ticketType: true,
       },
       take: limit,
@@ -50,10 +53,22 @@ export class OrderService {
     };
   }
 
-  async setCompletedOrderStatus(orderId: number): Promise<Order> {
-    return this.prisma.order.update({
-      where: { id: orderId },
+  async setActiveOrderStatus(orderIds: number[]) {
+    return this.prisma.order.updateMany({
+      where: { id: { in: orderIds } },
+      data: { status: OrderStatus.ACTIVE },
+    });
+  }
+  async setCompletedOrderStatus(orderIds: number[]) {
+    return this.prisma.order.updateMany({
+      where: { id: { in: orderIds } },
       data: { status: OrderStatus.COMPLETED },
+    });
+  }
+
+  async deleteOrdersByIds(orderIds: number[]) {
+    return this.prisma.order.deleteMany({
+      where: { id: { in: orderIds } },
     });
   }
 
@@ -61,8 +76,10 @@ export class OrderService {
     const currentDate = new Date();
     return this.prisma.order.findMany({
       where: {
-        date: {
-          lte: currentDate,
+        tourGroup: {
+          date: {
+            lte: currentDate,
+          },
         },
         status: {
           not: OrderStatus.COMPLETED,

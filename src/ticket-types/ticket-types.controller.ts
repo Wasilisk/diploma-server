@@ -14,8 +14,8 @@ import { CreateTicketTypeDto } from './dto/create-ticket-type.dto';
 export class TicketTypesController {
   constructor(private readonly ticketTypesService: TicketTypesService) {}
   @Post()
-  addTicketType(@Body() ticketTypeDto: CreateTicketTypeDto) {
-    return this.ticketTypesService.create(ticketTypeDto);
+  addTicketTypes(@Body() ticketTypeDto: CreateTicketTypeDto[]) {
+    return this.ticketTypesService.createMany(ticketTypeDto);
   }
 
   @Get('/:tourId')

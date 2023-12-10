@@ -26,6 +26,8 @@ import { RawBodyMiddleware } from './common/middlewares/raw-body.middleware';
 import { JsonBodyMiddleware } from './common/middlewares/json-body.middleware';
 import { OrderModule } from './order/order.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TourScheduleModule } from './tour-schedule/tour-schedule.module';
+import { TourGroupModule } from './tour-group/tour-group.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { ScheduleModule } from '@nestjs/schedule';
     TicketTypesModule,
     PaymentModule,
     OrderModule,
+    TourScheduleModule,
+    TourGroupModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: resolve(__dirname, 'static'),

@@ -7,5 +7,6 @@ import { TourController } from './tour.controller';
   providers: [TourService],
   controllers: [TourController],
   imports: [PrismaModule],
+  exports: [TourService],
 })
 export class TourModule {}

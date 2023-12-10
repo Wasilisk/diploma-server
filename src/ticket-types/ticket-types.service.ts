@@ -6,22 +6,6 @@ import { CreateTicketTypeDto } from './dto/create-ticket-type.dto';
 export class TicketTypesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(ticketTypeDto: CreateTicketTypeDto) {
-    const ticketType = await this.prisma.ticketType.create({
-      data: {
-        tour: {
-          connect: {
-            id: Number(ticketTypeDto.tourId),
-          },
-        },
-        name: ticketTypeDto.name,
-        price: Number(ticketTypeDto.price),
-      },
-    });
-
-    return ticketType;
-  }
-
   async createMany(ticketTypesDto: CreateTicketTypeDto[]) {
     return this.prisma.ticketType.createMany({
       data: ticketTypesDto,

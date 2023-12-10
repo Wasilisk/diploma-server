@@ -4,6 +4,7 @@ import { Filtering, Pagination } from '../common/interfaces';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { getImageUrl } from '../common/utils/get-image-url';
 import { getWhere } from '../common/utils/get-where';
+import { TicketTypesService } from '../ticket-types/ticket-types.service';
 
 @Injectable()
 export class TourService {
@@ -24,7 +25,7 @@ export class TourService {
         },
         gallery: imagesIds,
         tourInfo: {
-          create: tourInfo,
+          create: { ...tourInfo, groupSize: Number(tourInfo.groupSize) },
         },
         ...otherData,
       },
@@ -69,6 +70,7 @@ export class TourService {
       include: {
         tourInfo: true,
         ticketTypes: true,
+        schedule: true,
       },
     });
 

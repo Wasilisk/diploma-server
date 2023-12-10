@@ -9,8 +9,8 @@ export class OrderScheduler {
   @Cron(CronExpression.EVERY_HOUR)
   async checkExpiredOrders() {
     const expiredOrders = await this.orderService.getExpiredOrders();
-    for (const order of expiredOrders) {
-      await this.orderService.setCompletedOrderStatus(order.id);
-    }
+    await this.orderService.setCompletedOrderStatus(
+      expiredOrders.map((order) => order.id),
+    );
   }
 }

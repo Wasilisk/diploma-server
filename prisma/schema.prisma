@@ -63,16 +63,18 @@ model Tour {
   tourInfo    TourInfo?
   ticketTypes TicketType[]
   orders      Order[]
+
+  schedule TourSchedule?
+  groups   TourGroup[]
 }
 
 model TourInfo {
-  id           Int     @id @default(autoincrement())
+  id           Int    @id @default(autoincrement())
   meetingPlace String
   endingPlace  String
   duration     String
-  groupSize    String?
+  groupSize    Int
   groupType    String
-  paymentInfo  String?
 
   tourId Int  @unique
   tour   Tour @relation(fields: [tourId], references: [id])
@@ -92,9 +94,7 @@ model TicketType {
 model Order {
   id     Int         @id @default(autoincrement())
   count  Int
-  status OrderStatus @default(ACTIVE)
-  date   DateTime
-  price  Int
+  status OrderStatus @default(RESERVED)
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
@@ -104,10 +104,43 @@ model Order {
 
   ticketTypeId Int
   ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  tourGroup   TourGroup @relation(fields: [tourGroupId], references: [id])
+  tourGroupId Int
 }
 
 enum OrderStatus {
+  RESERVED
   ACTIVE
   CANCELED
   COMPLETED
+}
+
+model TourSchedule {
+  id        Int        @id @default(autoincrement())
+  startDate DateTime
+  endDate   DateTime
+  daysOff   DateTime[]
+
+  monday    String[]
+  tuesday   String[]
+  wednesday String[]
+  thursday  String[]
+  friday    String[]
+  saturday  String[]
+  sunday    String[]
+
+  tourId Int  @unique
+  tour   Tour @relation(fields: [tourId], references: [id])
+}
+
+model TourGroup {
+  id   Int      @id @default(autoincrement())
+  time String
+  date DateTime
+
+  orders Order[]
+
+  tourId Int
+  tour   Tour @relation(fields: [tourId], references: [id])
 }
