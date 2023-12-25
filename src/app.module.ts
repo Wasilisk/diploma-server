@@ -28,6 +28,7 @@ import { OrderModule } from './order/order.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TourScheduleModule } from './tour-schedule/tour-schedule.module';
 import { TourGroupModule } from './tour-group/tour-group.module';
+import { AccessControlModule } from './access-control/access-control.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { TourGroupModule } from './tour-group/tour-group.module';
     OrderModule,
     TourScheduleModule,
     TourGroupModule,
+    AccessControlModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: resolve(__dirname, 'static'),

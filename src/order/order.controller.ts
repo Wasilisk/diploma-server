@@ -6,16 +6,19 @@ import { AuthGuard } from '../common/guards/auth.guard';
 import {
   FilteringParams,
   GetUserId,
-  PaginationParams,
+  PaginationParams, Roles,
 } from '../common/decorators';
 import { Filtering, PaginatedResource, Pagination } from '../common/interfaces';
+import {Role} from "../common/enums";
+import {RoleGuard} from "../common/guards/role.guard";
 
 @Controller('orders')
 export class OrderController {
   constructor(private readonly ticketService: OrderService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
+  @Roles([Role.USER])
+  @UseGuards(AuthGuard, RoleGuard)
   getUserOrders(
     @GetUserId() userId: number,
     @PaginationParams() paginationParams: Pagination,

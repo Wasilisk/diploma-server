@@ -13,6 +13,7 @@ import {
   FilteringParams,
   GetUserId,
   PaginationParams,
+  Roles,
   SortingParams,
 } from '../common/decorators';
 import { SupportMessageDto } from './dto/support-message.dto';
@@ -24,13 +25,16 @@ import {
   Sorting,
 } from '../common/interfaces';
 import { SupportMessage } from '@prisma/client';
+import { Role } from '../common/enums';
+import { RoleGuard } from '../common/guards/role.guard';
 
 @Controller('support-message')
 export class SupportMessageController {
   constructor(private readonly supportMessageService: SupportMessageService) {}
 
-  @UseGuards(AuthGuard)
   @Post()
+  @Roles([Role.USER])
+  @UseGuards(AuthGuard, RoleGuard)
   createSupportMessage(
     @GetUserId() userId: number,
     @Body() supportMessageDto: SupportMessageDto,
@@ -39,6 +43,8 @@ export class SupportMessageController {
   }
 
   @Get()
+  @Roles([Role.ADMIN])
+  @UseGuards(AuthGuard, RoleGuard)
   getAllSupportMessages(
     @PaginationParams() paginationParams: Pagination,
     @SortingParams(['createdAt']) sort?: Sorting,
@@ -48,6 +54,8 @@ export class SupportMessageController {
   }
 
   @Delete('/:messageId')
+  @Roles([Role.ADMIN])
+  @UseGuards(AuthGuard, RoleGuard)
   deleteSupportMessage(@Param('messageId', ParseIntPipe) messageId: number) {
     return this.supportMessageService.delete(messageId);
   }

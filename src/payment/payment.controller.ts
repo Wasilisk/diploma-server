@@ -2,13 +2,16 @@ import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreateCheckoutSessionDto } from './dto/create-checkout-session.dto';
 import { AuthGuard } from '../common/guards/auth.guard';
-import { GetUserId } from '../common/decorators';
+import { GetUserId, Roles } from '../common/decorators';
+import { Role } from '../common/enums';
+import { RoleGuard } from '../common/guards/role.guard';
 
 @Controller()
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
   @Post('/create-checkout-session')
-  @UseGuards(AuthGuard)
+  @Roles([Role.USER])
+  @UseGuards(AuthGuard, RoleGuard)
   createCheckoutSession(
     @GetUserId() userId: number,
     @Body() createCheckoutSession: CreateCheckoutSessionDto,
