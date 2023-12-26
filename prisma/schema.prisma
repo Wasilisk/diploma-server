@@ -18,15 +18,15 @@ model User {
   profile           Profile?
   supportMessages   SupportMessage[]
   orders            Order[]
-  role              UserRole        @default(USER)
+  role              UserRole         @default(USER)
 }
 
 enum UserRole {
   ADMIN
+  MODERATOR
   GUIDE
   USER
 }
-
 
 model Profile {
   id             Int     @id @default(autoincrement())

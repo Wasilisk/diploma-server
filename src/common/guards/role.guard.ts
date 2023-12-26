@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { Role } from '../enums';
 import { Roles } from '../decorators';
-import {AccessControlService} from "../../access-control/access-control.service";
+import { AccessControlService } from '../../access-control/access-control.service';
 
 export class TokenDto {
   id: number;
@@ -28,7 +28,7 @@ export class RoleGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request['user'];
 
-    for (let role of requiredRoles) {
+    for (const role of requiredRoles) {
       const result = this.accessControlService.isAuthorized({
         requiredRole: role,
         currentRole: user.role,

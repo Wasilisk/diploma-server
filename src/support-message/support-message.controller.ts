@@ -43,7 +43,7 @@ export class SupportMessageController {
   }
 
   @Get()
-  @Roles([Role.ADMIN])
+  @Roles([Role.MODERATOR])
   @UseGuards(AuthGuard, RoleGuard)
   getAllSupportMessages(
     @PaginationParams() paginationParams: Pagination,
@@ -54,7 +54,7 @@ export class SupportMessageController {
   }
 
   @Delete('/:messageId')
-  @Roles([Role.ADMIN])
+  @Roles([Role.MODERATOR])
   @UseGuards(AuthGuard, RoleGuard)
   deleteSupportMessage(@Param('messageId', ParseIntPipe) messageId: number) {
     return this.supportMessageService.delete(messageId);

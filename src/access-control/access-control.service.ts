@@ -13,6 +13,7 @@ export class AccessControlService {
 
   constructor() {
     this.buildRoles([Role.GUEST, Role.USER, Role.GUIDE, Role.ADMIN]);
+    this.buildRoles([Role.MODERATOR, Role.ADMIN]);
   }
 
   private buildRoles(roles: Role[]) {
@@ -25,7 +26,7 @@ export class AccessControlService {
   }
 
   public isAuthorized({ currentRole, requiredRole }: IsAuthorizedParams) {
-    for (let hierarchy of this.hierarchies) {
+    for (const hierarchy of this.hierarchies) {
       const priority = hierarchy.get(currentRole);
       const requiredPriority = hierarchy.get(requiredRole);
       if (priority && requiredPriority && priority >= requiredPriority) {
