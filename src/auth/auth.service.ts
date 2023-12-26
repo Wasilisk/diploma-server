@@ -66,6 +66,10 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    if (user.isBanned) {
+      throw new HttpException('User is banned', HttpStatus.BAD_REQUEST);
+    }
+
     const validPassword = await verifyPassword(
       loginDto.password,
       user.password,

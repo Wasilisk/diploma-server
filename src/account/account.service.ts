@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -8,10 +9,39 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import _ from 'underscore';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { getImageUrl } from '../common/utils/get-image-url';
+import { Pagination } from '../common/interfaces';
+import { ChangeUserRoleDto } from './dto/change-user-role.dto';
+import { User, UserRole } from '@prisma/client';
+import { ToggleBanUserDto } from './dto/toggle-ban-user.dto';
 
 @Injectable()
 export class AccountService {
   constructor(private prisma: PrismaService) {}
+
+  async getAllUsers(userId: number, { page, limit, size, offset }: Pagination) {
+    const [users, count] = await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        include: {
+          profile: true,
+        },
+        where: {
+          id: {
+            not: userId,
+          },
+        },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.user.count(),
+    ]);
+
+    return {
+      totalItems: count - 1,
+      items: users,
+      page,
+      size,
+    };
+  }
 
   async getUserProfile(userId: number) {
     const user = await this.prisma.user.findUnique({
@@ -81,5 +111,43 @@ export class AccountService {
     if (user) {
       throw new BadRequestException(errorMessage);
     }
+  }
+
+  async changeUserRole(userId: number, changeUserRole: ChangeUserRoleDto) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (this.isRoleChangeNotAllowed(user, changeUserRole)) {
+      throw new ForbiddenException();
+    }
+
+    await this.prisma.user.update({
+      where: { id: changeUserRole.id },
+      data: { role: changeUserRole.role },
+    });
+  }
+
+  async toggleBanUser({ userId }: ToggleBanUserDto) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new HttpException('User not found.', HttpStatus.BAD_REQUEST);
+    }
+
+    const newBanStatus = !user.isBanned;
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { isBanned: newBanStatus },
+    });
+  }
+
+  private isRoleChangeNotAllowed(
+    user: User | null,
+    changeUserRole: ChangeUserRoleDto,
+  ): boolean {
+    return (
+      user?.role === UserRole.MODERATOR &&
+      (changeUserRole.role === UserRole.ADMIN ||
+        changeUserRole.role === UserRole.MODERATOR)
+    );
   }
 }
