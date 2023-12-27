@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import _ from 'underscore';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { getImageUrl } from '../common/utils/get-image-url';
-import { Pagination } from '../common/interfaces';
+import { FilteringV2, Pagination } from '../common/interfaces';
 import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { User, UserRole } from '@prisma/client';
 import { ToggleBanUserDto } from './dto/toggle-ban-user.dto';
@@ -18,25 +18,43 @@ import { ToggleBanUserDto } from './dto/toggle-ban-user.dto';
 export class AccountService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllUsers(userId: number, { page, limit, size, offset }: Pagination) {
-    const [users, count] = await this.prisma.$transaction([
-      this.prisma.user.findMany({
-        include: {
-          profile: true,
+  async getAllUsers(
+    userId: number,
+    { page, limit, size, offset }: Pagination,
+    filters?: FilteringV2,
+  ) {
+    const query = {
+      where: {
+        id: {
+          not: userId,
         },
-        where: {
-          id: {
-            not: userId,
+        email: {
+          contains: filters?.email,
+        },
+        role: filters?.role as UserRole,
+        profile: {
+          firstName: {
+            contains: filters?.firstName,
+          },
+          lastName: {
+            contains: filters?.lastName,
           },
         },
-        take: limit,
-        skip: offset,
-      }),
-      this.prisma.user.count(),
+      },
+      include: {
+        profile: true,
+      },
+      take: limit,
+      skip: offset,
+    };
+
+    const [users, count] = await this.prisma.$transaction([
+      this.prisma.user.findMany(query),
+      this.prisma.user.count({ where: query.where }),
     ]);
 
     return {
-      totalItems: count - 1,
+      totalItems: count,
       items: users,
       page,
       size,

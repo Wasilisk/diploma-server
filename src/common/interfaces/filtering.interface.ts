@@ -3,3 +3,7 @@ export interface Filtering {
   rule: string;
   value: string;
 }
+
+export interface FilteringV2 {
+  [key: string]: string;
+}
