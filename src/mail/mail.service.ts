@@ -21,4 +21,13 @@ export class MailService {
       },
     });
   }
+
+  async replyToSupportMessage(email: string, context: { content: string }) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Technical support',
+      template: 'reply-to-support-message',
+      context,
+    });
+  }
 }

@@ -29,7 +29,7 @@ export const FilteringParams = createParamDecorator(
     if (!filter) return null;
 
     const filterExpressions = filter.split(';');
-
+    console.log(filterExpressions)
     const parsedFilters: Filtering[] = filterExpressions.map((expression) => {
       if (
         !expression.match(
