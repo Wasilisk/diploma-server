@@ -9,7 +9,6 @@ import { HttpException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { hashPassword, verifyPassword } from '../common/utils/passwordHasher';
 import { SignUpDto } from './dto/signup.dto';
-import _ from 'underscore';
 import { HttpService } from '@nestjs/axios';
 import { constants } from 'src/common/utils/constants';
 import { LoginDto } from './dto/login.dto';

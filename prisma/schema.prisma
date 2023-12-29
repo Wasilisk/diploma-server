@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   email             String           @unique
-  phone             String           @unique
+  phone             String
   password          String
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
@@ -152,4 +152,21 @@ model TourGroup {
 
   tourId Int
   tour   Tour @relation(fields: [tourId], references: [id])
+}
+
+model GuidePermissionRequest {
+  id          Int                          @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  email       String                       @unique
+  phone       String
+  description String
+  status      GuidePermissionRequestStatus @default(PENDING)
+  createdAt   DateTime                     @default(now())
+}
+
+enum GuidePermissionRequestStatus {
+  PENDING
+  DECLINED
+  ACCEPTED
 }

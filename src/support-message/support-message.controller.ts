@@ -29,7 +29,7 @@ import { Role } from '../common/enums';
 import { RoleGuard } from '../common/guards/role.guard';
 import { FilteringParamsV2 } from '../common/decorators/filtering-params-v2.decorator';
 import { UpdateSupportMessageDto } from './dto/update-support-message.dto';
-import { ReplyToSupportMessageDto } from "./dto/reply-to-support-message.dto";
+import { ReplyToSupportMessageDto } from './dto/reply-to-support-message.dto';
 
 @Controller('support-message')
 export class SupportMessageController {

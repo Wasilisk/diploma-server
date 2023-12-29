@@ -30,4 +30,32 @@ export class MailService {
       context,
     });
   }
+
+  async sendGuideRequestResponse(email: string, temporaryPassword?: string) {
+    if (temporaryPassword) {
+      await this.mailerService.sendMail({
+        to: email,
+        subject: 'Guide Permission and Account Created',
+        template: 'guide-account-created-message',
+        context: {
+          email,
+          temporaryPassword,
+        },
+      });
+    } else {
+      await this.mailerService.sendMail({
+        to: email,
+        subject: 'Guide Permission Granted',
+        template: 'accept-guide-request',
+      });
+    }
+  }
+
+  async sendGuideRequestRefusal(email: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Guide Permission Request - Refused',
+      template: 'guide-permission-request-refused',
+    });
+  }
 }
