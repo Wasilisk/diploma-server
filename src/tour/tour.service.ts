@@ -4,30 +4,28 @@ import { Filtering, Pagination } from '../common/interfaces';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { getImageUrl } from '../common/utils/get-image-url';
 import { getWhere } from '../common/utils/get-where';
-import { TicketTypesService } from '../ticket-types/ticket-types.service';
+import { UpdateTourDto } from './dto/update-tour.dto';
+import { parseToArray } from '../common/utils/parse-to-array';
 
 @Injectable()
 export class TourService {
   constructor(private prisma: PrismaService) {}
 
   async create(
+    userId: number,
     images: Array<Express.Multer.File>,
     createTourDto: CreateTourDto,
   ) {
     const imagesIds = images.map((image) => getImageUrl(image.filename));
-    const { directionId, tourInfo, ...otherData } = createTourDto;
+    const { tourInfo, ...otherData } = createTourDto;
     const tour = await this.prisma.tour.create({
       data: {
-        direction: {
-          connect: {
-            id: Number(directionId),
-          },
-        },
         gallery: imagesIds,
         tourInfo: {
-          create: { ...tourInfo, groupSize: Number(tourInfo.groupSize) },
+          create: tourInfo,
         },
         ...otherData,
+        createdBy: userId,
       },
       include: {
         tourInfo: true,
@@ -46,8 +44,10 @@ export class TourService {
       take: limit,
       skip: offset,
       include: {
+        direction: true,
         tourInfo: true,
         ticketTypes: true,
+        schedule: true,
       },
     };
 
@@ -76,6 +76,36 @@ export class TourService {
 
     return tour;
   }
+
+  async update(
+    userId: number,
+    images: Array<Express.Multer.File>,
+    updateTourDto: UpdateTourDto,
+  ) {
+    const imagesUrl = parseToArray(images).map((image) =>
+      getImageUrl(image.filename),
+    );
+    const { id, tourInfo, gallery, ...otherData } = updateTourDto;
+
+    const tour = await this.prisma.tour.update({
+      where: { id },
+      data: {
+        gallery: [...parseToArray(gallery), ...imagesUrl],
+        tourInfo: {
+          update: {
+            data: tourInfo,
+          },
+        },
+        ...otherData,
+      },
+      include: {
+        tourInfo: true,
+      },
+    });
+
+    return tour;
+  }
+
   async delete(tourId: number) {
     await this.prisma.tour.delete({
       where: { id: tourId },

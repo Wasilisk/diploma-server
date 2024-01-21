@@ -21,6 +21,8 @@ model User {
   orders            Order[]
   role              UserRole         @default(USER)
   isBanned          Boolean          @default(false)
+
+  tours Tour[]
 }
 
 enum UserRole {
@@ -76,6 +78,9 @@ model Tour {
 
   schedule TourSchedule?
   groups   TourGroup[]
+
+  createdBy Int
+  user      User @relation(fields: [createdBy], references: [id])
 }
 
 model TourInfo {
@@ -84,10 +89,9 @@ model TourInfo {
   endingPlace  String
   duration     String
   groupSize    Int
-  groupType    String
 
   tourId Int  @unique
-  tour   Tour @relation(fields: [tourId], references: [id])
+  tour   Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 }
 
 model TicketType {
@@ -96,7 +100,7 @@ model TicketType {
   price Int
 
   tourId Int
-  tour   Tour @relation(fields: [tourId], references: [id])
+  tour   Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   orders Order[]
 }
@@ -127,10 +131,9 @@ enum OrderStatus {
 }
 
 model TourSchedule {
-  id        Int        @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   startDate DateTime
   endDate   DateTime
-  daysOff   DateTime[]
 
   monday    String[]
   tuesday   String[]
@@ -141,7 +144,7 @@ model TourSchedule {
   sunday    String[]
 
   tourId Int  @unique
-  tour   Tour @relation(fields: [tourId], references: [id])
+  tour   Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 }
 
 model TourGroup {
@@ -152,7 +155,7 @@ model TourGroup {
   orders Order[]
 
   tourId Int
-  tour   Tour @relation(fields: [tourId], references: [id])
+  tour   Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
 }
 
 model GuidePermissionRequest {

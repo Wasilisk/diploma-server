@@ -93,16 +93,10 @@ export class AccountService {
       'Цей емейл вже використовується',
       userId,
     );
-    await this.validateUniqueUserField(
-      'phone',
-      phone,
-      'Цей номер вже використовується',
-      userId,
-    );
 
     await this.prisma.$transaction([
       this.prisma.profile.update({
-        where: { id: userId },
+        where: { userId: userId },
         data: {
           ...profileInfo,
           profilePicture: file

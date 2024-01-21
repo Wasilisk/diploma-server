@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTourScheduleDto } from './dto/create-tour-schedule.dto';
+import { UpdateTourScheduleDto } from './dto/update-tour-schedule.dto';
 
 @Injectable()
 export class TourScheduleService {
@@ -9,6 +10,14 @@ export class TourScheduleService {
   async create(tourScheduleDto: CreateTourScheduleDto) {
     return this.prisma.tourSchedule.create({
       data: tourScheduleDto,
+    });
+  }
+
+  async update(updateTourScheduleDto: UpdateTourScheduleDto) {
+    const { tourId, ...otherData } = updateTourScheduleDto;
+    return this.prisma.tourSchedule.update({
+      where: { tourId },
+      data: otherData,
     });
   }
 
