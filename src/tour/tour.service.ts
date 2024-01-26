@@ -3,7 +3,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Filtering, Pagination } from '../common/interfaces';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { getImageUrl } from '../common/utils/get-image-url';
-import { getWhere } from '../common/utils/get-where';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import { parseToArray } from '../common/utils/parse-to-array';
 
@@ -35,12 +34,69 @@ export class TourService {
     return tour;
   }
 
-  async getAll(
-    { page, limit, size, offset }: Pagination,
-    filters?: Filtering[],
-  ) {
+  async getAll({ page, limit, size, offset }: Pagination, filters?: Filtering) {
     const query = {
-      where: getWhere(filters),
+      where: {
+        directionId: filters?.directionId
+          ? Number(filters?.directionId)
+          : undefined,
+        schedule: {
+          OR: [
+            {
+              AND: [
+                { startDate: { gte: filters?.startDate } },
+                { startDate: { lte: filters?.endDate } },
+              ],
+            },
+            {
+              AND: [
+                { endDate: { gte: filters?.startDate } },
+                { endDate: { lte: filters?.endDate } },
+              ],
+            },
+            {
+              AND: [
+                { startDate: { lte: filters?.startDate } },
+                { endDate: { gte: filters?.endDate } },
+              ],
+            },
+          ],
+        },
+        ticketTypes: {
+          some: {
+            AND: [
+              {
+                price: {
+                  gte: filters?.minPrice ? Number(filters.minPrice) : undefined,
+                },
+              },
+              {
+                price: {
+                  lte: filters?.maxPrice ? Number(filters.maxPrice) : undefined,
+                },
+              },
+            ],
+          },
+        },
+        tourInfo: {
+          AND: [
+            {
+              groupSize: {
+                gte: filters?.minGroupSize
+                  ? Number(filters.minGroupSize)
+                  : undefined,
+              },
+            },
+            {
+              groupSize: {
+                lte: filters?.maxGroupSize
+                  ? Number(filters.maxGroupSize)
+                  : undefined,
+              },
+            },
+          ],
+        },
+      },
       take: limit,
       skip: offset,
       include: {
@@ -71,6 +127,7 @@ export class TourService {
         tourInfo: true,
         ticketTypes: true,
         schedule: true,
+        direction: true,
       },
     });
 

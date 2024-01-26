@@ -17,18 +17,13 @@ import { multerOptions } from '../common/configs/multer.config';
 import { TourService } from './tour.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { Tour } from '@prisma/client';
-import {
-  FilteringParams,
-  GetUserId,
-  PaginationParams,
-  Roles,
-} from '../common/decorators';
+import { GetUserId, PaginationParams, Roles } from '../common/decorators';
 import { Filtering, PaginatedResource, Pagination } from '../common/interfaces';
 import { Role } from '../common/enums';
 import { AuthGuard } from '../common/guards/auth.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 import { UpdateTourDto } from './dto/update-tour.dto';
-import { parseToArray } from '../common/utils/parse-to-array';
+import { FilteringParams } from '../common/decorators/filtering-params.decorator';
 
 @Controller('tours')
 export class TourController {
@@ -60,7 +55,16 @@ export class TourController {
   @Get()
   getAllTours(
     @PaginationParams() paginationParams: Pagination,
-    @FilteringParams(['directionId']) filters?: Filtering[],
+    @FilteringParams([
+      'directionId',
+      'startDate',
+      'endDate',
+      'minPrice',
+      'maxPrice',
+      'minGroupSize',
+      'maxGroupSize',
+    ])
+    filters?: Filtering,
   ): Promise<PaginatedResource<Partial<Tour>>> {
     return this.tourService.getAll(paginationParams, filters);
   }

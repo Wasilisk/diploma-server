@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { DirectionDto } from './dto/direction.dto';
 import { getImageUrl } from '../common/utils/get-image-url';
 import {
-  FilteringV2,
+  Filtering,
   Pagination,
   Sorting,
   SortingDirection,
@@ -29,7 +29,7 @@ export class DirectionService {
   async getAll(
     { page, limit, size, offset }: Pagination,
     sort?: Sorting,
-    filters?: FilteringV2,
+    filters?: Filtering,
   ) {
     const query = {
       where: {

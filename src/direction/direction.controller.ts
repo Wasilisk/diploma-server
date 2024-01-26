@@ -5,28 +5,30 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  Post, Put,
+  Post,
+  Put,
   UploadedFile,
   UseGuards,
-  UseInterceptors
-} from "@nestjs/common";
+  UseInterceptors,
+} from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../common/configs/multer.config';
 import { DirectionService } from './direction.service';
 import { DirectionDto } from './dto/direction.dto';
 import { Direction } from '@prisma/client';
-import { PaginationParams, Roles, SortingParams } from "../common/decorators";
+import { PaginationParams, Roles, SortingParams } from '../common/decorators';
 import { Role } from '../common/enums';
 import { AuthGuard } from '../common/guards/auth.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 import {
-  FilteringV2,
+  Filtering,
   PaginatedResource,
-  Pagination, Sorting
-} from "../common/interfaces";
-import { FilteringParamsV2 } from '../common/decorators/filtering-params-v2.decorator';
-import { UpdateDirectionDto } from "./dto/update-direction.dto";
+  Pagination,
+  Sorting,
+} from '../common/interfaces';
+import { FilteringParams } from '../common/decorators/filtering-params.decorator';
+import { UpdateDirectionDto } from './dto/update-direction.dto';
 
 @Controller('directions')
 export class DirectionController {
@@ -46,7 +48,7 @@ export class DirectionController {
   getAllDirections(
     @PaginationParams() paginationParams: Pagination,
     @SortingParams(['tours']) sort?: Sorting,
-    @FilteringParamsV2(['name']) filters?: FilteringV2,
+    @FilteringParams(['name']) filters?: Filtering,
   ): Promise<PaginatedResource<Partial<Direction>>> {
     return this.directionService.getAll(paginationParams, sort, filters);
   }

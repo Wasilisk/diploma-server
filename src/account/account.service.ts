@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import _ from 'underscore';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { getImageUrl } from '../common/utils/get-image-url';
-import { FilteringV2, Pagination } from '../common/interfaces';
+import { Filtering, Pagination } from '../common/interfaces';
 import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { User, UserRole } from '@prisma/client';
 import { ToggleBanUserDto } from './dto/toggle-ban-user.dto';
@@ -21,7 +21,7 @@ export class AccountService {
   async getAllUsers(
     userId: number,
     { page, limit, size, offset }: Pagination,
-    filters?: FilteringV2,
+    filters?: Filtering,
   ) {
     const query = {
       where: {

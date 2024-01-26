@@ -17,10 +17,10 @@ import { multerOptions } from '../common/configs/multer.config';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { Role } from '../common/enums';
 import { RoleGuard } from '../common/guards/role.guard';
-import { FilteringV2, Pagination } from '../common/interfaces';
+import { Filtering, Pagination } from '../common/interfaces';
 import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { ToggleBanUserDto } from './dto/toggle-ban-user.dto';
-import { FilteringParamsV2 } from '../common/decorators/filtering-params-v2.decorator';
+import { FilteringParams } from '../common/decorators/filtering-params.decorator';
 
 @Controller('account')
 export class AccountController {
@@ -39,8 +39,8 @@ export class AccountController {
   getAllUsers(
     @GetUserId() userId: number,
     @PaginationParams() paginationParams: Pagination,
-    @FilteringParamsV2(['firstName', 'lastName', 'email', 'role'])
-    filters?: FilteringV2,
+    @FilteringParams(['firstName', 'lastName', 'email', 'role'])
+    filters?: Filtering,
   ) {
     return this.accountService.getAllUsers(userId, paginationParams, filters);
   }

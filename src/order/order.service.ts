@@ -3,7 +3,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Order, OrderStatus } from '@prisma/client';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Filtering, Pagination } from '../common/interfaces';
-import { getWhere } from '../common/utils/get-where';
 
 @Injectable()
 export class OrderService {
@@ -19,13 +18,12 @@ export class OrderService {
   async getByUserId(
     userId: number,
     { page, limit, size, offset }: Pagination,
-    filters?: Filtering[],
+    filters?: Filtering,
   ) {
     const query = {
       where: {
         userId,
-        status: { not: OrderStatus.RESERVED },
-        ...getWhere(filters),
+        status: filters?.status as OrderStatus,
       },
       include: {
         tour: {

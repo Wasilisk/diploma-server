@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SupportMessageDto } from './dto/support-message.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { FilteringV2, Pagination, Sorting } from '../common/interfaces';
+import { Filtering, Pagination, Sorting } from '../common/interfaces';
 import { getOrder } from '../common/utils/get-order';
 import { SupportMessageStatus } from '@prisma/client';
 import { UpdateSupportMessageDto } from './dto/update-support-message.dto';
@@ -28,7 +28,7 @@ export class SupportMessageService {
   async getAll(
     { page, limit, size, offset }: Pagination,
     sort?: Sorting,
-    filters?: FilteringV2,
+    filters?: Filtering,
   ) {
     const query = {
       where: {

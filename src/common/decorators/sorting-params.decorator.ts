@@ -15,11 +15,11 @@ export const SortingParams = createParamDecorator(
     if (typeof validParams != 'object')
       throw new BadRequestException('Invalid sort parameter');
 
-    const sortPattern = /^([a-zA-Z0-9]+):(asc|desc)$/;
+    const sortPattern = /^([a-zA-Z0-9]+)=(asc|desc)$/;
     if (!sort.match(sortPattern))
       throw new BadRequestException('Invalid sort parameter');
 
-    const [property, direction] = sort.split(':');
+    const [property, direction] = sort.split('=');
     if (!validParams.includes(property))
       throw new BadRequestException(`Invalid sort property: ${property}`);
     if (!['desc', 'asc'].includes(direction))

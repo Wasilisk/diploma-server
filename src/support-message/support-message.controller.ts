@@ -19,7 +19,7 @@ import {
 import { SupportMessageDto } from './dto/support-message.dto';
 import { SupportMessageService } from './support-message.service';
 import {
-  FilteringV2,
+  Filtering,
   PaginatedResource,
   Pagination,
   Sorting,
@@ -27,7 +27,7 @@ import {
 import { SupportMessage } from '@prisma/client';
 import { Role } from '../common/enums';
 import { RoleGuard } from '../common/guards/role.guard';
-import { FilteringParamsV2 } from '../common/decorators/filtering-params-v2.decorator';
+import { FilteringParams } from '../common/decorators/filtering-params.decorator';
 import { UpdateSupportMessageDto } from './dto/update-support-message.dto';
 import { ReplyToSupportMessageDto } from './dto/reply-to-support-message.dto';
 
@@ -51,7 +51,7 @@ export class SupportMessageController {
   getAllSupportMessages(
     @PaginationParams() paginationParams: Pagination,
     @SortingParams(['createdAt']) sort?: Sorting,
-    @FilteringParamsV2(['status']) filters?: FilteringV2,
+    @FilteringParams(['status']) filters?: Filtering,
   ): Promise<PaginatedResource<Partial<SupportMessage>>> {
     return this.supportMessageService.getAll(paginationParams, sort, filters);
   }

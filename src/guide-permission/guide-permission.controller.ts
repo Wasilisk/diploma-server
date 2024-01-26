@@ -19,12 +19,12 @@ import { AuthGuard } from '../common/guards/auth.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 import { UpdateGuidePermissionRequestStatusDto } from './dto/update-guide-permission-request-status.dto';
 import {
-  FilteringV2,
+  Filtering,
   PaginatedResource,
   Pagination,
   Sorting,
 } from '../common/interfaces';
-import { FilteringParamsV2 } from '../common/decorators/filtering-params-v2.decorator';
+import { FilteringParams } from '../common/decorators/filtering-params.decorator';
 
 @Controller('guide-permission')
 export class GuidePermissionController {
@@ -48,7 +48,7 @@ export class GuidePermissionController {
   getAllGuidePermissionRequests(
     @PaginationParams() paginationParams: Pagination,
     @SortingParams(['createdAt']) sort?: Sorting,
-    @FilteringParamsV2(['status']) filters?: FilteringV2,
+    @FilteringParams(['status']) filters?: Filtering,
   ): Promise<PaginatedResource<Partial<GuidePermissionRequest>>> {
     return this.guidePermissionService.getAll(paginationParams, sort, filters);
   }

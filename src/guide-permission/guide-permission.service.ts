@@ -8,7 +8,7 @@ import { CreateGuidePermissionRequestDto } from './dto/create-guide-permission-r
 import { UpdateGuidePermissionRequestStatusDto } from './dto/update-guide-permission-request-status.dto';
 import { GuidePermissionRequestStatus, UserRole } from '@prisma/client';
 import { MailService } from '../mail/mail.service';
-import { FilteringV2, Pagination, Sorting } from '../common/interfaces';
+import { Filtering, Pagination, Sorting } from '../common/interfaces';
 import { getOrder } from '../common/utils/get-order';
 import { generate } from 'generate-password';
 
@@ -42,7 +42,7 @@ export class GuidePermissionService {
   async getAll(
     { page, limit, size, offset }: Pagination,
     sort?: Sorting,
-    filters?: FilteringV2,
+    filters?: Filtering,
   ) {
     const query = {
       where: {
